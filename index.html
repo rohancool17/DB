@@ -66,7 +66,14 @@
                 </div>
 
                 <div class="filter-group">
-                    <input type="date" id="date-filter" value="2026-06-01">
+                    <div style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-secondary);">
+                        <span>From:</span>
+                        <input type="date" id="from-date-filter" value="2026-01-01" style="padding: 8px 10px; font-size: 12px;">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-secondary);">
+                        <span>To:</span>
+                        <input type="date" id="to-date-filter" value="2026-06-01" style="padding: 8px 10px; font-size: 12px;">
+                    </div>
                     <select id="zone-filter">
                         <option value="all">All Zones</option>
                         <option value="north">North Zone</option>
@@ -290,64 +297,53 @@
 
         <!-- Tab 3: Product Insights -->
         <section id="tab-products" class="tab-content">
-            <div class="grid-cols-2">
-                <div class="dashboard-card">
-                    <div class="card-header-row">
-                        <h2 class="card-title">Top Selling Pharmaceutical Products</h2>
-                    </div>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Product Name</th>
-                                    <th>Category</th>
-                                    <th>Sales Volume</th>
-                                    <th>Growth Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>CardioProtect (Atorvastatin)</strong></td>
-                                    <td>Cardiology</td>
-                                    <td>4,250 units</td>
-                                    <td><span class="badge badge-high">+18.5%</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>GlicoControl (Metformin)</strong></td>
-                                    <td>Diabetology</td>
-                                    <td>3,900 units</td>
-                                    <td><span class="badge badge-high">+12.1%</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>NeuroRelax (Alprazolam)</strong></td>
-                                    <td>Neurology</td>
-                                    <td>2,100 units</td>
-                                    <td><span class="badge badge-mid">+4.2%</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>InflaQuiet (Ibuprofen)</strong></td>
-                                    <td>Analgesics</td>
-                                    <td>1,800 units</td>
-                                    <td><span class="badge badge-low">-2.4%</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>PulmoSafe (Albuterol)</strong></td>
-                                    <td>Pulmonology</td>
-                                    <td>1,450 units</td>
-                                    <td><span class="badge badge-high">+24.0%</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="dashboard-card">
+                <div class="card-header-row">
+                    <h2 class="card-title">Top Selling Pharmaceutical Products</h2>
                 </div>
-
-                <div class="dashboard-card">
-                    <div class="card-header-row">
-                        <h2 class="card-title">Therapeutic Area Performance</h2>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="therapeuticChart"></canvas>
-                    </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Sales Volume</th>
+                                <th>Growth Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>CardioProtect (Atorvastatin)</strong></td>
+                                <td>Cardiology</td>
+                                <td>4,250 units</td>
+                                <td><span class="badge badge-high">+18.5%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>GlicoControl (Metformin)</strong></td>
+                                <td>Diabetology</td>
+                                <td>3,900 units</td>
+                                <td><span class="badge badge-high">+12.1%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>NeuroRelax (Alprazolam)</strong></td>
+                                <td>Neurology</td>
+                                <td>2,100 units</td>
+                                <td><span class="badge badge-mid">+4.2%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>InflaQuiet (Ibuprofen)</strong></td>
+                                <td>Analgesics</td>
+                                <td>1,800 units</td>
+                                <td><span class="badge badge-low">-2.4%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>PulmoSafe (Albuterol)</strong></td>
+                                <td>Pulmonology</td>
+                                <td>1,450 units</td>
+                                <td><span class="badge badge-high">+24.0%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>

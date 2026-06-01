@@ -179,7 +179,8 @@ let state = {
     activeTab: 'executive',
     zone: 'all',
     view: 'hq',
-    date: '2026-06-01',
+    fromDate: '2026-01-01',
+    toDate: '2026-06-01',
     search: '',
     sortBy: 'sales',
     sortOrder: 'desc'
@@ -193,7 +194,8 @@ const DOM = {
     
     zoneFilter: document.getElementById('zone-filter'),
     viewFilter: document.getElementById('view-filter'),
-    dateFilter: document.getElementById('date-filter'),
+    fromDateFilter: document.getElementById('from-date-filter'),
+    toDateFilter: document.getElementById('to-date-filter'),
     tableSearch: document.getElementById('table-search'),
     
     tabButtons: document.querySelectorAll('.nav-item'),
@@ -236,7 +238,6 @@ let markersLayer = null;
 let growthChartInstance = null;
 let productPieChartInstance = null;
 let zoneBarChartInstance = null;
-let therapeuticChartInstance = null;
 let modalTrendChartInstance = null;
 
 // --- Map Initialization ---
@@ -375,10 +376,18 @@ function seedRandom(str) {
 
 // Custom Seeded dynamic data variation generator
 function getDynamicData() {
-    const rand = seedRandom(state.date);
+    const rand = seedRandom(state.fromDate + '_' + state.toDate);
+    
+    const from = new Date(state.fromDate);
+    const to = new Date(state.toDate);
+    
+    // Calculate difference in months (minimum 1)
+    let diffMonths = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth()) + 1;
+    if (diffMonths <= 0) diffMonths = 1;
     
     return baseHqData.map(item => {
-        const factor = 0.85 + rand() * 0.3; // ±15% variance
+        // Scale values relative to range duration in months (based on a standard 5-month reference)
+        const factor = (0.85 + rand() * 0.3) * (diffMonths / 5.0);
         const growthFactor = (rand() * 10) - 5; // ±5% variance
         const rx = Math.round(item.rx * factor);
         const sales = parseFloat((item.sales * factor).toFixed(1));
@@ -482,7 +491,7 @@ function renderKPIs(filteredData) {
     DOM.kpiConversionsVal.textContent = totalConversions.toLocaleString('en-IN');
     DOM.kpiAchievementVal.textContent = `${avgAchievement}%`;
 
-    const rand = seedRandom(state.date);
+    const rand = seedRandom(state.fromDate + '_' + state.toDate);
     const rxHistory = Array.from({length: 8}, () => Math.round(500 + rand() * 1500));
     const salesHistory = Array.from({length: 8}, () => 20 + rand() * 80);
     const conversionsHistory = Array.from({length: 8}, () => 10 + rand() * 40);
@@ -682,55 +691,6 @@ function renderCharts(filteredData) {
             }
         });
     }
-
-    // 4. Tab 3: Products Insights - Therapeutic area trends
-    const ctxTherapeutic = document.getElementById('therapeuticChart');
-    if (ctxTherapeutic) {
-        if (therapeuticChartInstance) {
-            therapeuticChartInstance.destroy();
-        }
-        
-        therapeuticChartInstance = new Chart(ctxTherapeutic, {
-            type: 'radar',
-            data: {
-                labels: ['Market Demand', 'Sales Target', 'Field Force Focus', 'Doctor Sentiment', 'Retention Rate'],
-                datasets: [
-                    {
-                        label: 'Cardiology (CardioProtect)',
-                        data: [90, 85, 95, 80, 88],
-                        borderColor: cColors.primary,
-                        backgroundColor: cColors.primary + '15',
-                        borderWidth: 2
-                    },
-                    {
-                        label: 'Diabetology (GlicoControl)',
-                        data: [75, 90, 80, 85, 78],
-                        borderColor: cColors.success,
-                        backgroundColor: cColors.success + '15',
-                        borderWidth: 2
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { color: cColors.text }
-                    }
-                },
-                scales: {
-                    r: {
-                        grid: { color: cColors.grid },
-                        pointLabels: { color: cColors.text },
-                        angleLines: { color: cColors.grid },
-                        ticks: { backdropColor: 'transparent', color: cColors.text }
-                    }
-                }
-            }
-        });
-    }
 }
 
 // Generate active operational alerts
@@ -820,7 +780,7 @@ function showRegionDetail(item) {
     setTimeout(() => {
         const ctxModalTrend = document.getElementById('modalTrendChart');
         if (ctxModalTrend) {
-            const rand = seedRandom(item.name + state.date);
+            const rand = seedRandom(item.name + state.fromDate + '_' + state.toDate);
             const trendValues = Array.from({length: 5}, () => Math.round(5 + rand() * 40));
             const cColors = getThemeColors();
 
@@ -931,8 +891,21 @@ function init() {
         updateUI();
     });
 
-    DOM.dateFilter.addEventListener('change', (e) => {
-        state.date = e.target.value;
+    DOM.fromDateFilter.addEventListener('change', (e) => {
+        state.fromDate = e.target.value;
+        if (new Date(state.toDate) < new Date(state.fromDate)) {
+            state.toDate = state.fromDate;
+            DOM.toDateFilter.value = state.fromDate;
+        }
+        updateUI();
+    });
+
+    DOM.toDateFilter.addEventListener('change', (e) => {
+        state.toDate = e.target.value;
+        if (new Date(state.fromDate) > new Date(state.toDate)) {
+            state.fromDate = state.toDate;
+            DOM.fromDateFilter.value = state.toDate;
+        }
         updateUI();
     });
 
