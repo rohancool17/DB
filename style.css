@@ -808,3 +808,16 @@ tr:hover td {
     box-shadow: var(--shadow-md) !important;
     padding: 8px 12px !important;
 }
+
+/* Bottom Grid for Charts & Insights */
+.bottom-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 1200px) {
+    .bottom-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

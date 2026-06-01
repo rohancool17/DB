@@ -841,6 +841,57 @@ function closeRegionDetail() {
     DOM.modalBackdrop.classList.remove('open');
 }
 
+// Render dynamic AI-powered smart insights
+function renderSmartInsights(filteredData) {
+    const container = document.getElementById('smart-insights-list');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    const rand = seedRandom(state.fromDate + '_' + state.toDate + '_' + state.zone);
+    const insights = [];
+    
+    if (state.zone === 'all') {
+        // User requested insight
+        insights.push(`Your doctor engagement in <strong style="color:var(--primary);">Delhi</strong> has gone up <strong>2%</strong> in the selected period, but in <strong style="color:var(--danger);">Maharashtra</strong> (Mumbai HQs) it is down by <strong>5%</strong>.`);
+        
+        insights.push(`High product adoption in <strong style="color:var(--success);">Karnataka</strong> (Bangalore HQs) has boosted conversions by <strong>18%</strong>, mostly driven by cardiology prescriptions.`);
+        
+        insights.push(`Overall sales achievement in the <strong style="color:var(--warning);">East Zone</strong> (Patna, Guwahati) lags targets by <strong>12%</strong> due to distribution supply delays in mid-quarter.`);
+    } else if (state.zone === 'north') {
+        insights.push(`Doctor engagement in <strong style="color:var(--primary);">Delhi</strong> has gone up <strong>2%</strong> in the selected range, while <strong style="color:var(--warning);">Srinagar</strong> HQs are lagging by <strong>6%</strong>.`);
+        insights.push(`Strong recovery in <strong style="color:var(--success);">Chandigarh</strong> and <strong style="color:var(--success);">Ludhiana</strong> with achievement scores hitting <strong>108%</strong>.`);
+    } else if (state.zone === 'west') {
+        insights.push(`General West Zone metrics are stable, but doctor visit frequency in <strong style="color:var(--danger);">Maharashtra</strong> (Pune and Mumbai) fell by <strong>5%</strong>.`);
+        insights.push(`<strong style="color:var(--success);">Indore</strong> and <strong style="color:var(--success);">Bhopal</strong> show excellent growth, driven by a <strong>15%</strong> increase in Metformin prescriptions.`);
+    } else if (state.zone === 'south') {
+        insights.push(`Outstanding performance in <strong style="color:var(--success);">Karnataka</strong> (Bangalore HQs) with an achievement rate of <strong>112%</strong>.`);
+        insights.push(`Engagement in <strong style="color:var(--warning);">Chennai</strong> is recovering (+4% MoM) but still runs <strong>8%</strong> below target threshold.`);
+    } else if (state.zone === 'east') {
+        insights.push(`High demand for PulmoSafe in <strong style="color:var(--success);">Guwahati</strong> and <strong style="color:var(--success);">Siliguri</strong> boosted sales by <strong>14%</strong>.`);
+        insights.push(`<strong style="color:var(--danger);">Katihar</strong> and <strong style="color:var(--danger);">Imphal</strong> are currently underperforming due to representative vacancies.`);
+    }
+    
+    // Calculate visible trend metrics
+    const avgGrowth = Math.round(filteredData.reduce((sum, item) => sum + item.growth, 0) / (filteredData.length || 1));
+    insights.push(`Across the ${filteredData.length} visible HQs, average monthly growth is running at <strong style="color:${avgGrowth >= 0 ? 'var(--success)' : 'var(--danger)'};">${avgGrowth >= 0 ? '+' : ''}${avgGrowth}%</strong>.`);
+
+    insights.forEach(text => {
+        const item = document.createElement('div');
+        item.style.display = 'flex';
+        item.style.gap = '12px';
+        item.style.padding = '12px';
+        item.style.borderRadius = '8px';
+        item.style.background = 'var(--bg-primary)';
+        item.style.border = '1px solid var(--border-color)';
+        
+        item.innerHTML = `
+            <div style="font-size:16px; margin-top:2px;">💡</div>
+            <div style="color:var(--text-secondary); line-height:1.4; font-size:12.5px;">${text}</div>
+        `;
+        container.appendChild(item);
+    });
+}
+
 // Master state-to-UI update function
 function updateUI() {
     const rawData = getDynamicData();
@@ -857,11 +908,12 @@ function updateUI() {
         filtered = filtered.filter(item => item.name.toLowerCase().includes(q));
     }
     
-    // Redraw Table, Map, KPI indicators, Charts
+    // Redraw Table, Map, KPI indicators, Charts, Insights
     renderKPIs(filtered);
     renderTable(filtered);
     renderCharts(filtered);
     renderAlerts(filtered);
+    renderSmartInsights(filtered);
     
     // Lazy-draw Leaflet markers to prevent blocking main UI thread
     if (state.activeTab === 'executive') {
