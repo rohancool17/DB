@@ -242,6 +242,20 @@ let modalTrendChartInstance = null;
 
 // --- Map Initialization ---
 function initMap() {
+    if (typeof L === 'undefined') {
+        console.warn("Leaflet map library is not loaded. Map placeholder rendered.");
+        const mapContainer = document.getElementById('india-map');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-secondary); text-align:center; padding: 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; color:var(--warning);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <strong>Offline Map Mode</strong>
+                    <p style="font-size:12.5px; max-width:280px; margin-top:8px; color:var(--text-muted);">The Leaflet map library failed to load. Please verify your internet connection.</p>
+                </div>
+            `;
+        }
+        return;
+    }
     if (mapInstance) return;
     
     mapInstance = L.map('india-map', {
@@ -554,13 +568,17 @@ function renderTable(filteredData) {
 
 // Render dynamic graphs
 function renderCharts(filteredData) {
+    if (typeof Chart === 'undefined') {
+        console.warn("Chart.js library is not loaded. Skipping chart rendering.");
+        return;
+    }
     const cColors = getThemeColors();
     const isDark = state.theme === 'dark';
 
     // 1. Executive Summary: Monthly Growth Trend
     const ctxGrowth = document.getElementById('growthChart');
     if (ctxGrowth) {
-        const rand = seedRandom(state.date);
+        const rand = seedRandom(state.fromDate + '_' + state.toDate);
         const randomGrowthRates = Array.from({length: 6}, () => Math.round(5 + rand() * 25));
         
         if (growthChartInstance) {
@@ -608,7 +626,7 @@ function renderCharts(filteredData) {
     // 2. Executive Summary: Product Sales Distribution
     const ctxProduct = document.getElementById('productPieChart');
     if (ctxProduct) {
-        const rand = seedRandom(state.zone + state.date);
+        const rand = seedRandom(state.zone + '_' + state.fromDate + '_' + state.toDate);
         const segments = [
             Math.round(20 + rand() * 20),
             Math.round(15 + rand() * 15),
