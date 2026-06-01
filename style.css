@@ -774,3 +774,37 @@ tr:hover td {
 .tab-content.active {
     display: flex;
 }
+
+/* Leaflet Custom Styling to match dashboard theme */
+.leaflet-container {
+    font-family: inherit !important;
+    background: var(--bg-primary) !important;
+}
+
+.leaflet-bar {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.leaflet-bar a {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.leaflet-bar a:hover {
+    background-color: var(--primary-light) !important;
+    color: var(--primary) !important;
+}
+
+.leaflet-tooltip-pane .leaflet-tooltip {
+    background: var(--surface-solid) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    box-shadow: var(--shadow-md) !important;
+    padding: 8px 12px !important;
+}
